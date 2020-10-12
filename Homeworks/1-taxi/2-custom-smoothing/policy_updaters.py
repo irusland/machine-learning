@@ -20,8 +20,8 @@ class PolicySmoother(PolicyUpdater):
                 new_policy[state] += 1 / agent.action_n
             else:
                 new_policy[state] /= sum(new_policy[state])
-        agent.policy = self.lambda_param * new_policy + \
-                       (1 - self.lambda_param) * agent.policy
+        agent.policy = self.lambda_param * new_policy + (
+                1 - self.lambda_param) * agent.policy
 
 
 class LaplaceSmoother(PolicyUpdater):

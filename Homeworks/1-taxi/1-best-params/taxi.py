@@ -96,7 +96,7 @@ def main():
     env = gym.make("Taxi-v3")
     agent = Agent(env.observation_space.n, env.action_space.n)
 
-    total_epochs = 10
+    total_epochs = 1
     total_sessions = 2000
     max_steps = 40
     q_param = 0.777
