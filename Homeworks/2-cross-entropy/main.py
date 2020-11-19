@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from torch import nn
 from matplotlib import pyplot as plt
+import datetime
 
 
 class CrossEntropyAgent(nn.Module):
@@ -60,10 +61,10 @@ def get_session(env, agent, session_len, visual=False):
             env.render()
 
         state, reward, done, _ = env.step(action)
-        reward += 1
         total_reward += reward
 
         position, speed = state
+        # Custom rewards
         if abs(position - 0.5) < EPSILON:
             print(position, speed, reward, 'GOAL REACHED at step', sesh)
             if speed - 0.001 < EPSILON:
@@ -119,29 +120,38 @@ def learn(episode_n, env, agent, session_len, session_n, q_param,
     return rewards
 
 
-env = gym.make("MountainCar-v0")
-agent = CrossEntropyAgent(env.observation_space.shape[0],
-                          env.action_space.n,
-                          hidden_layers_dim=100)
+if __name__ == '__main__':
+    env = gym.make("MountainCar-v0")
+    agent = CrossEntropyAgent(env.observation_space.shape[0],
+                              env.action_space.n,
+                              hidden_layers_dim=100)
 
-total_epochs = 20
-session_n = 1
-session_len = 8000
-q_param = 0.1
+    total_epochs = 30
+    session_n = 1
+    session_len = 8000
+    q_param = 0.9
 
-rewards = learn(total_epochs, env, agent, session_len, session_n, q_param,
-                visual=True)
+    rewards = learn(total_epochs, env, agent, session_len, session_n, q_param,
+                    visual=True)
 
-last_sesh = get_session(env, agent, session_len, visual=True)
-print(f'Last session:'
-      f'\n\t{len(last_sesh["actions"])} moves'
-      f'\n\t{last_sesh["total_reward"]} score')
+    fig, ax = plt.subplots()
+    ax.plot(100 * (np.arange(len(rewards)) + 1), rewards)
+    plt.xlabel('Episodes')
+    plt.ylabel('Average Reward')
+    plt.title('Deep-cross-entropy')
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
-plt.plot(np.arange(1, len(rewards) + 1), rewards)
-plt.ylabel('Score')
-plt.xlabel('Episode #')
-plt.show()
+    textstr = '\n'.join((
+        f'total_epochs={total_epochs}',
+        f'session_n={session_n}',
+        f'session_len={session_len}',
+        f'q_param={q_param}',
+    ))
 
-get_session(env, agent, session_len, visual=True)
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
+            verticalalignment='top', bbox=props)
+
+    plt.savefig(f'rewards{datetime.datetime.now()}.jpg')
+    plt.show()
+
+    get_session(env, agent, session_len, visual=True)
