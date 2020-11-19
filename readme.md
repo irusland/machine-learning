@@ -21,7 +21,7 @@ Action space has 6 values for agent to be executed
     |Y| : |B: |
     +---------+
     
-## [Mountain-Car](Homeworks/1-taxi/1-best-params/taxi.py)
+## [Mountain-Car](Homeworks/3-hw/main.py)
 Q-Learning method
 ![car](Homeworks/3-hw/mcar.png)
 
