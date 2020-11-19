@@ -119,24 +119,6 @@ def learn(episode_n, env, agent, session_len, session_n, q_param,
     return rewards
 
 
-# из исходников MountainCar-v0:
-#     Observation:
-#         Type: Box(2)
-#         Num    Observation               Min            Max
-#         0      Car Position              -1.2           0.6
-#         1      Car Velocity              -0.07          0.07
-#     Actions:
-#         Type: Discrete(3)
-#         Num    Action
-#         0      Accelerate to the Left
-#         1      Don't accelerate
-#         2      Accelerate to the Right
-# => то есть стандартная реализация с observation_space.n не подходит, у нас
-# не дается на вход какие-то состояние, дается отрезок [-1.2, 0.6] из
-# действительных чисел, но компьютеры не умеют в действительные тогда
-# поступим сдеющим образом разобъем этот отрезок например на 16 для
-# того, что бы можно было работать с конечным числом входных состояних
-
 env = gym.make("MountainCar-v0")
 agent = CrossEntropyAgent(env.observation_space.shape[0],
                           env.action_space.n,
